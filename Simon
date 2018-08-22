@@ -1,0 +1,66 @@
+import explorerhat
+from time import sleep
+import random
+
+def add_random(sequence):
+    sequence.append(random.choice([1,2,3,4]))
+    return sequence
+
+def compare_sequences(A,B):
+    print("S: ", A)
+    print("PS: ", B)
+    for i in range(0, len(B)):
+        if B[i] != A[i]:
+            return False
+    return True
+
+def show_element(element):
+    explorerhat.light.off()
+    sleep(0.5)
+    if element == 1:
+        explorerhat.light.blue.on()
+    elif element == 2:
+        explorerhat.light.yellow.on()
+    elif element == 3:
+        explorerhat.light.red.on()
+    elif element == 4:
+        explorerhat.light.green.on()
+    sleep(0.5)
+    
+def Simon():
+    sequence = []
+    player_sequence = []
+    playing = True
+    while playing:
+        sequence = add_random(sequence)
+        for i in sequence:
+            show_element(i)
+        explorerhat.light.off()
+        sleep(1)
+        while len(player_sequence) < len(sequence):
+            if explorerhat.touch.one.is_pressed():
+                explorerhat.light.blue.on()
+                player_sequence.append(1)
+                sleep(0.1)
+            elif explorerhat.touch.two.is_pressed():
+                explorerhat.light.yellow.on()
+                player_sequence.append(2)
+                sleep(0.1)
+            elif explorerhat.touch.three.is_pressed():
+                explorerhat.light.red.on()
+                player_sequence.append(3)
+                sleep(0.1)
+            elif explorerhat.touch.four.is_pressed():
+                explorerhat.light.green.on()
+                player_sequence.append(4)
+                sleep(0.1)
+            explorerhat.light.off()
+            playing = compare_sequences(sequence, player_sequence)
+        player_sequence = []
+    print("LOSS")
+    explorerhat.light.pulse()
+    sleep(1)
+    explorerhat.light.off()
+    Simon()
+    
+Simon()
